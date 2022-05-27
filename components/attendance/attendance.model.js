@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Term from "../terms/term.model.js";
 
 const AttendanceSchema = new mongoose.Schema(
     {
@@ -13,6 +14,9 @@ const AttendanceSchema = new mongoose.Schema(
         mark: {
             type: Number,
             default: 0
+        },
+        dateLastMarked: {
+            type: Date
         }
     },
     {
