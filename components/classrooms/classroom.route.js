@@ -1,9 +1,9 @@
 import express from 'express'
-import { createClassRoom, fetchAllClassRooms } from './classroom.controller.js'
+import { createClassroom, getAllClassrooms } from './classroom.controller.js'
 
 const Router = express.Router()
 
-Router.post('/new-classroom', createClassRoom)
-Router.get('/get-all', fetchAllClassRooms)
+Router.post('/', createClassroom)
+Router.get('/get-all', getAllClassrooms)
 
 export default Router
