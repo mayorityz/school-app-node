@@ -8,7 +8,7 @@ export const createTerm = async (req, res) => {
         throw new BadRequestError("Cannot create new term when there is still an active term")
     }
     const body = req.body
-    removeKeysFromObj(body, "status")
+    removeKeysFromObj(body, "status", "dateLastOpened")
     const term = Term.create(body)
     res.status(201).json({ term })
 }

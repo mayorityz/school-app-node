@@ -21,6 +21,9 @@ const TermSchema = new mongoose.Schema(
             type: Number,
             default: 0
         },
+        dateLastOpened: {
+            type: Date
+        },
         status: {
             type: String,
             default: "active",
