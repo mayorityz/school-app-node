@@ -1,6 +1,6 @@
 import Staff from "./staff.model.js";
 import { NotFoundError } from "../../utils/errors.js";
-import { excludeKeysFromObj } from "../../utils/helper.js";
+import { removeKeysFromObj } from "../../utils/helper.js";
 
 const staffNotFoundError = new NotFoundError("No such staff exists")
 
@@ -17,7 +17,7 @@ export const createStaff = async (req, res) => {
 
 export const updateStaff = async (req, res) => {
     const body = req.body
-    excludeKeysFromObj(body, "password") // admin shouldn't update a staff's password
+    removeKeysFromObj(body, "password") // admin shouldn't update a staff's password
     const staff = await Staff.findByIdAndUpdate(id, body, {
         new: true,
         runValidators: true
