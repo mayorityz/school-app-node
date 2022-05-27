@@ -1,25 +1,47 @@
 import mongoose from 'mongoose'
 
-const studentSchema = new mongoose.Schema(
+const StudentSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      required: [true, "Please provide student's first name"],
+      trim: true
     },
     lastName: {
       type: String,
-      required: true,
+      required: [true, "Please provide student's last name"],
+      trim: true
     },
-    gender: String,
+    gender: {
+      type: String,
+      enum: {
+        values: ["male", "female"],
+        message: "{VALUE} is not a valid gender"
+      },
+      required: [true, "Please provide student's gender"]
+    },
+    classroom: {
+      type: mongoose.Types.ObjectId,
+      ref: "Classroom"
+    },
+    dob: {
+      type: Date,
+      required: [true, "Please provide student's date of birth"]
+    },
+    active: {
+      type: Boolean,
+      default: true
+    },
+    password: {
+      type: String,
+      required: [true, "Please provide password for the student"]
+    },
     admissionNumber: {
       type: String,
-      required: true,
-    },
-    classRoom: String,
-    dob: String,
+      required: [true, "Please provide student's admission number"],
+    }
   },
   { timestamps: true },
 )
-const Students = mongoose.model('students', studentSchema)
 
-export default Students
+export default mongoose.model("Student", StudentSchema)
