@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 
 const StaffSchema = new mongoose.Schema(
     {
@@ -47,5 +48,15 @@ const StaffSchema = new mongoose.Schema(
     },
     { timestamps: true }
 )
+
+StaffSchema.methods.generateToken = function () {
+    const payload = {
+        id: this._id,
+        classroom: this.classroom,
+        active: this.active,
+        role: this.role
+    }
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" })
+}
 
 export default mongoose.model("Staff", StaffSchema)
