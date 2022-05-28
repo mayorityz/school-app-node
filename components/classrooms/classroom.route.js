@@ -1,9 +1,9 @@
 import express from 'express'
 import { createClassroom, getAllClassrooms } from './classroom.controller.js'
 
-const Router = express.Router()
+const router = express.Router()
 
-Router.post('/', createClassroom)
-Router.get('/get-all', getAllClassrooms)
+router.post('/', createClassroom)
+router.get('/', getAllClassrooms)
 
-export default Router
+export default router
