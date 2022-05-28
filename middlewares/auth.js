@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import { ForbiddenError, UnauthenticatedError } from "../utils/errors.js";
 
-export const authMiddleware = (req, res) => {
+export const authMiddleware = (req, res, next) => {
     try {
         const { authorization } = req.headers
         const token = authorization.split(" ")[1]
         const payload = jwt.verify(token, process.env.JWT_SECRET)
         req.user = payload
+        next()
     } catch (error) {
         throw new UnauthenticatedError("Not authenticated")
     }
