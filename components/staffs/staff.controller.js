@@ -1,5 +1,5 @@
 import Staff from "./staff.model.js";
-import { BadRequestError, NotFoundError } from "../../utils/errors.js";
+import { BadRequestError, NotFoundError, UnauthenticatedError } from "../../utils/errors.js";
 import { removeKeysFromObj } from "../../utils/helper.js";
 
 const staffNotFoundError = new NotFoundError("No such staff exists")
@@ -12,7 +12,8 @@ export const getAllStaffs = async (req, res) => {
 export const createStaff = async (req, res) => {
     const body = req.body
     const staff = await Staff.create(body)
-    res.status(201).json({ staff })
+    const token = await staff.generateToken()
+    res.status(201).json({ token })
 }
 
 export const updateStaff = async (req, res) => {
@@ -50,4 +51,18 @@ export const changePassword = async (req, res) => {
     staff.password = newPassword
     await staff.save()
     res.status(200).json({ message: "Password updated successfully" })
+}
+
+export const login = async (req, res) => {
+    const { email, password } = req.body
+    const staff = await Staff.findOne({ email })
+    if (!staff) {
+        throw new UnauthenticatedError("Invalid credentials")
+    }
+    const passwordMatch = await staff.confirmPassword(password)
+    if (!passwordMatch) {
+        throw new UnauthenticatedError("Invalid credentials")
+    }
+    const token = user.generateToken()
+    res.status(200).json({ token })
 }

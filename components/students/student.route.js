@@ -1,8 +1,11 @@
 import express from 'express'
-import { changePassword, createStudent, getAllStudents, getSingleStudent } from './student.controller.js'
+import { changePassword, createStudent, getAllStudents, getSingleStudent, login } from './student.controller.js'
 import { authMiddleware, permit } from "../../middlewares/auth.js";
 
 const router = express.Router()
+
+// public route
+router.post("/login", login)
 
 router.use(authMiddleware)
 router.route("/")

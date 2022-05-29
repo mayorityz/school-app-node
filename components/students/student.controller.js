@@ -1,10 +1,11 @@
 import Student from './student.model.js';
-import { BadRequestError, ForbiddenError, NotFoundError } from "../../utils/errors.js";
+import { BadRequestError, ForbiddenError, NotFoundError, UnauthenticatedError } from "../../utils/errors.js";
 
 export const createStudent = async (req, res) => {
   const body = req.body
   const student = await Student.create(body)
-  res.status(201).json({ student })
+  const token = await student.generateToken()
+  res.status(201).json({ token })
 }
 
 export const getAllStudents = async (req, res) => {
@@ -55,9 +56,23 @@ export const changePassword = async (req, res) => {
   }
   const passwordMatch = await student.confirmPassword(oldPassword)
   if (!passwordMatch) {
-      throw new BadRequestError("Invalid credentials")
+    throw new BadRequestError("Invalid credentials")
   }
   student.password = newPassword
   await student.save()
   res.status(200).json({ message: "Password updated successfully" })
+}
+
+export const login = async (req, res) => {
+  const { admissionNumber, password } = req.body
+  const student = await Student.findOne({ admissionNumber })
+  if (!student) {
+    throw new UnauthenticatedError("Invalid credentials")
+  }
+  const passwordMatch = await student.confirmPassword(password)
+  if (!passwordMatch) {
+    throw new UnauthenticatedError("Invalid credentials")
+  }
+  const token = user.generateToken()
+  res.status(200).json({ token })
 }
