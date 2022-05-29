@@ -1,5 +1,7 @@
-import { Error as MongooseError } from "mongoose"
-import { CustomHTTPError } from "../utils/errors";
+import mongoose from "mongoose";
+import { CustomHTTPError } from "../utils/errors.js";
+
+const { Error: MongooseError } = mongoose
 
 export const errorHandlerMIddleware = (err, req, res, next) => {
     if (err instanceof CustomHTTPError) {
