@@ -3,7 +3,7 @@ dotenv.config()
 
 import mongoose from 'mongoose'
 
-var DB_POOL = process.env.NODE_ENV
+var DB_POOL = process.env.NODE_ENV !== "dev"
   ? process.env.REMOTE_DB
   : process.env.LOCAL_DB
 
