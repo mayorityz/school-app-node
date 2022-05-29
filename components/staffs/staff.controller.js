@@ -17,7 +17,7 @@ export const createStaff = async (req, res) => {
 
 export const updateStaff = async (req, res) => {
     const body = req.body
-    removeKeysFromObj(body, "password") // admin shouldn't update a staff's password
+    removeKeysFromObj(body, "password", "email")
     const staff = await Staff.findByIdAndUpdate(id, body, {
         new: true,
         runValidators: true

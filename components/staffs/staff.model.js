@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
+import validator from "validator"
 
 const StaffSchema = new mongoose.Schema(
     {
@@ -13,6 +14,14 @@ const StaffSchema = new mongoose.Schema(
             type: String,
             required: [true, "Please provide staff's last name"],
             trim: true
+        },
+        email: {
+            type: String,
+            validate: {
+                validator: validator.isEmail,
+                message: "Email is invalid"
+            },
+            unique: true
         },
         gender: {
             type: String,
@@ -50,8 +59,8 @@ const StaffSchema = new mongoose.Schema(
     { timestamps: true }
 )
 
-StaffSchema.pre("save", async function(next) {
-    if (this.isModified("password")){
+StaffSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
         const salt = await bcrypt.genSalt()
         const hashedPassword = await bcrypt.hash(this.password, salt)
         this.password = hashedPassword
@@ -59,7 +68,7 @@ StaffSchema.pre("save", async function(next) {
     next()
 })
 
-StaffSchema.methods.comparePassword = async function (password){
+StaffSchema.methods.comparePassword = async function (password) {
     const isMatch = await bcrypt.compare(password, this.password)
     return isMatch
 }
@@ -69,7 +78,8 @@ StaffSchema.methods.generateToken = function () {
         id: this._id,
         classroom: this.classroom,
         active: this.active,
-        role: this.role
+        role: this.role,
+        email: this.email
     }
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" })
 }
