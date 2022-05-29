@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { changePassword, createStaff, getAllStaffs, getSingleStaff, updateStaff } from "./staff.controller.js";
-import { permit } from "../../middlewares/auth.js";
+import { authMiddleware, permit } from "../../middlewares/auth.js";
 
 const router = Router()
 
+router.use(authMiddleware)
 router.route("/")
   .get(permit("admin"), getAllStaffs)
   .post(permit("admin"), createStaff)

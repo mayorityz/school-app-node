@@ -30,7 +30,6 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use(authMiddleware)
 app.use(`${ROUTE_PATH}/attendance`, AttendanceRoute)
 app.use(`${ROUTE_PATH}/classroom`, ClassroomRoute)
 app.use(`${ROUTE_PATH}/section`, SectionRoute)
