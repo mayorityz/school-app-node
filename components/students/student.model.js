@@ -60,4 +60,14 @@ StudentSchema.methods.comparePassword = async function(password) {
   return isMatch
 }
 
+StudentSchema.methods.generateToken = function () {
+  const payload = {
+      id: this._id,
+      classroom: this.classroom,
+      active: this.active,
+      admissionNumber: this.admissionNumber
+  }
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" })
+}
+
 export default mongoose.model("Student", StudentSchema)
