@@ -39,6 +39,7 @@ const StudentSchema = new mongoose.Schema(
     admissionNumber: {
       type: String,
       required: [true, "Please provide student's admission number"],
+      unique: true
     }
   },
   { timestamps: true },
