@@ -1,6 +1,7 @@
 import Term from "./term.model.js";
 import { BadRequestError, NotFoundError } from "../../utils/errors.js";
 import { removeKeysFromObj } from "../../utils/helper.js";
+import { isToday } from "../../utils/time.js";
 
 export const createTerm = async (req, res) => {
     const activeTerm = await Term.findOne({ status: "active" })
@@ -26,7 +27,10 @@ export const openTheDay = async (req, res) => {
     const { id } = req.params
     const term = await Term.findById(id)
     if (!term) {
-        throw NotFoundError("Term does not exists")
+        throw new NotFoundError("Term does not exists")
+    }
+    if (isToday(term.dateLastOpened)) {
+        throw new BadRequestError("Day already opened")
     }
     term.daysOpened = term.daysOpened + 1
     term.dateLastOpened = new Date()
