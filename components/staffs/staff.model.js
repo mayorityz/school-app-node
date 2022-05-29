@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs"
 
 const StaffSchema = new mongoose.Schema(
     {
@@ -48,6 +49,20 @@ const StaffSchema = new mongoose.Schema(
     },
     { timestamps: true }
 )
+
+StaffSchema.pre("save", async function(next) {
+    if (this.isModified("password")){
+        const salt = await bcrypt.genSalt()
+        const hashedPassword = await bcrypt.hash(this.password, salt)
+        this.password = hashedPassword
+    }
+    next()
+})
+
+StaffSchema.methods.comparePassword = async function (password){
+    const isMatch = await bcrypt.compare(password, this.password)
+    return isMatch
+}
 
 StaffSchema.methods.generateToken = function () {
     const payload = {

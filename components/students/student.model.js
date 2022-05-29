@@ -1,4 +1,5 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
+import bcrypt from "bcryptjs";
 
 const StudentSchema = new mongoose.Schema(
   {
@@ -44,5 +45,19 @@ const StudentSchema = new mongoose.Schema(
   },
   { timestamps: true },
 )
+
+StudentSchema.pre("save", async function(next) {
+  if (this.isModified("password")){
+      const salt = await bcrypt.genSalt()
+      const hashedPassword = await bcrypt.hash(this.password, salt)
+      this.password = hashedPassword
+  }
+  next()
+})
+
+StudentSchema.methods.comparePassword = async function(password) {
+  const isMatch = await bcrypt.compare(password, this.password)
+  return isMatch
+}
 
 export default mongoose.model("Student", StudentSchema)
