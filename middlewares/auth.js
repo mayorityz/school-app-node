@@ -6,10 +6,17 @@ export const authMiddleware = (req, res, next) => {
         const { authorization } = req.headers
         const token = authorization.split(" ")[1]
         const payload = jwt.verify(token, process.env.JWT_SECRET)
+        if (!payload.active) {
+            throw new UnauthenticatedError("User not active")
+        }
         req.user = payload
         next()
     } catch (error) {
-        throw new UnauthenticatedError("Not authenticated")
+        let message = "User not authenticated"
+        if (error instanceof UnauthenticatedError) {
+            message = error.message
+        }
+        throw new UnauthenticatedError(message)
     }
 }
 
