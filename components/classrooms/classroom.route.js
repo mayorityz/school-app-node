@@ -4,8 +4,7 @@ import { permit } from "../../middlewares/auth.js";
 
 const router = express.Router()
 
-router.use(permit("admin"))
-router.post('/', createClassroom)
-router.get('/', getAllClassrooms)
+router.post('/', permit("admin"), createClassroom)
+router.get('/', permit("admin"), getAllClassrooms)
 
 export default router

@@ -4,12 +4,11 @@ import { permit } from "../../middlewares/auth.js";
 
 const router = Router()
 
-router.use(permit("admin"))
 router.route("/")
-  .get(getAllStaffs)
-  .post(createStaff)
+  .get(permit("admin"), getAllStaffs)
+  .post(permit("admin"), createStaff)
 router.route("/:id")
-  .get(getSingleStaff)
-  .patch(updateStaff)
+  .get(permit("admin"), getSingleStaff)
+  .patch(permit("admin"), updateStaff)
 
 export default router

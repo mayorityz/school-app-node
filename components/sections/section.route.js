@@ -4,9 +4,8 @@ import { permit } from "../../middlewares/auth.js";
 
 const router = Router()
 
-router.use(permit("admin"))
 router.route("/")
-  .get(getAllSections)
-  .post(createSection)
+  .get(permit("admin"), getAllSections)
+  .post(permit("admin"), createSection)
 
 export default router

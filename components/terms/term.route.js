@@ -4,9 +4,8 @@ import { permit } from "../../middlewares/auth.js";
 
 const router = Router()
 
-router.use(permit("admin"))
-router.post("/", createTerm)
-router.patch("/:id", openTheDay)
-router.post("/:id", closeTerm)
+router.post("/", permit("admin"), createTerm)
+router.patch("/:id", permit("admin"), openTheDay)
+router.post("/:id", permit("admin"), closeTerm)
 
 export default router
