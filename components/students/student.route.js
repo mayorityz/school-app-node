@@ -1,14 +1,11 @@
 import express from 'express'
-import {
-  CreateStudent,
-  FetchStudents,
-  fetchByNumber,
-} from './student.controller.js'
+import { createStudent, getAllStudents, getSingleStudent } from './student.controller.js'
+import { permit } from "../../middlewares/auth.js";
 
-const Router = express.Router()
+const router = express.Router()
 
-Router.post('/new-student', CreateStudent)
-Router.get('/fetch-student', FetchStudents)
-Router.post('/studentByNumber', fetchByNumber)
+router.post("/", permit("admin"), createStudent)
+router.get("/", permit("admin", "teacher"), getAllStudents)
+router.get("/:paramValue", permit("admin", "teacher"), getSingleStudent)
 
-export default Router
+export default router

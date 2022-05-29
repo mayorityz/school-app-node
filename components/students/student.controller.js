@@ -1,76 +1,45 @@
-import StudentModel from './student.model.js'
+import Student from './student.model.js';
+import { BadRequestError, NotFoundError } from "../../utils/errors.js";
 
-export const CreateStudent = async (req, res) => {
-  try {
-    let {
-      firstName,
-      lastName,
-      gender,
-      admissionNumber,
-      classRoom,
-      dob,
-    } = req.body
-
-    StudentModel.findOne({ admissionNumber }, async (err, result) => {
-      if (result) {
-        res
-          .status(500)
-          .json({ status: 500, message: 'Admission Number Already Exists!' })
-      } else {
-        let newStudent = new StudentModel({
-          firstName,
-          lastName,
-          gender,
-          admissionNumber,
-          classRoom,
-          dob,
-        })
-        await newStudent.save()
-        res.status(200).json({
-          status: 200,
-          message: `${firstName} has been added successfully!`,
-        })
-      }
-    })
-  } catch (error) {
-    res.status(500).json({ status: 500, message: 'Internal Server Error!' })
-  }
+export const createStudent = async (req, res) => {
+  const body = req.body
+  const student = await Student.create(body)
+  res.status(201).json({ student })
 }
 
-export const FetchStudents = async (req, res) => {
-  try {
-    StudentModel.find({}, (er, results) => {
-      if (results) {
-        res.status(200).json({
-          status: 200,
-          message: 'Fetched Successfully!',
-          data: results,
-        })
-      } else {
-        res.status(500).json({
-          status: 500,
-          message: `Error Occured While Fetching`,
-        })
-      }
-    })
-  } catch (error) {
-    res.status(500).json({ status: 500, message: 'Internal Server Error!' })
+export const getAllStudents = async (req, res) => {
+  const { classroom } = req.query
+  let filter = {}
+  // admin can optionally filter by classroom
+  // but a teacher's request will be filtered by classroom
+  if (classroom) {
+    filter.classroom = classroom
   }
+  if (req.user.role === "teacher") {
+    filter.classroom = req.user.classroom
+  }
+  const students = await Student.find(filter).select("-password")
+  res.status(200).json({ students })
 }
 
-export const fetchByNumber = async (req, res) => {
-  try {
-    const { admissionNumber } = req.body
-    StudentModel.findOne({ admissionNumber }, (er, result) => {
-      if (result) {
-        res.status(200).json({
-          status: 200,
-          message: `Successful`,
-          data: result,
-        })
-      }
-    })
-  } catch (error) {
-    res.status(500).json({ status: 500, message: 'Internal Server Error!' })
+export const getSingleStudent = async (req, res) => {
+  const { paramValue } = req.param
+  const { field } = req.query
+  if (!field) {
+    throw new BadRequestError("Field was not specified")
   }
+  if (!["id", "admission-number"].includes(field)) {
+    throw new BadRequestError(`${field} is not a valid field. Expected one of id or admission-number`)
+  }
+  let filter = {}
+  const key = field === "id" ? "_id" : "admissionNumber"
+  filter[key] = paramValue
+  if (req.user.role === "teacher") {
+    filter.classroom = req.user.classroom
+  }
+  const student = await Student.findOne(filter).select("-password")
+  if (!student) {
+    throw new NotFoundError("Student does not exists")
+  }
+  res.status(200).json({ student })
 }
