@@ -24,7 +24,7 @@ export const getAllStudents = async (req, res) => {
 }
 
 export const getSingleStudent = async (req, res) => {
-  const { paramValue } = req.param
+  const { paramValue } = req.params
   const { field } = req.query
   if (!field) {
     throw new BadRequestError("Field was not specified")
