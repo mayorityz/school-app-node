@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const ClassroomSchema = new mongoose.Schema(
   {
@@ -6,16 +6,16 @@ const ClassroomSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: [true, "Please provide the title for this classroom"],
-      unique: true
+      unique: true,
     },
   },
   {
     section: {
       type: mongoose.Types.ObjectId,
-      ref: "Section"
-    }
+      ref: "Section",
+    },
   },
-  { timestamps: true },
-)
+  { timestamps: true }
+);
 
-export default mongoose.model('Classroom', ClassroomSchema)
+export default mongoose.model("Classroom", ClassroomSchema);
