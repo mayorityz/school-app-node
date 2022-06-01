@@ -59,10 +59,13 @@ export const login = async (req, res) => {
     if (!staff) {
         throw new UnauthenticatedError("Invalid credentials")
     }
+    if (!staff.active){
+        throw new UnauthenticatedError("User has been deactivated")
+    }
     const passwordMatch = await staff.confirmPassword(password)
     if (!passwordMatch) {
         throw new UnauthenticatedError("Invalid credentials")
     }
-    const token = user.generateToken()
+    const token = staff.generateToken()
     res.status(200).json({ token })
 }

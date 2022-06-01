@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from "bcryptjs";
+import Term from "../terms/term.model.js";
 
 const StudentSchema = new mongoose.Schema(
   {
@@ -60,12 +61,18 @@ StudentSchema.methods.comparePassword = async function(password) {
   return isMatch
 }
 
-StudentSchema.methods.generateToken = function () {
+StudentSchema.methods.generateToken = async function () {
+  const term = await Term.findOne({status: "active"})
   const payload = {
       id: this._id,
       classroom: this.classroom,
       active: this.active,
-      admissionNumber: this.admissionNumber
+      admissionNumber: this.admissionNumber,
+      schoolInfo: {
+        term: term._id,
+        session: term.session,
+        dateLastOpened: term.dateLastOpened
+    }
   }
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" })
 }

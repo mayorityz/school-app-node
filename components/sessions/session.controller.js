@@ -13,14 +13,26 @@ export const createSession = async (req, res) => {
     res.status(201).json({ session })
 }
 
+export const getAllSessions = async (req, res) => {
+    const sessions = await Session.find().populate("terms")
+    res.status(200).json({sessions})
+}
+
 export const closeSession = async (req, res) => {
     const { id } = req.params
-    const session = await Session.findByIdAndUpdate(id, { status: "concluded" }, {
-        new: true,
-        runValidators: true
-    })
+    const session = await Session.findById(id).populate("terms")
     if (!session) {
         throw new NotFoundError("Session does not exists")
     }
+    if (session.status === "concluded") {
+        throw new BadRequestError("Session has already been closed before")
+    }
+    session.terms.forEach(term => {
+        if (term.status === "active") {
+            throw new BadRequestError(`${term.title} is still active. Close the term before closing session`)
+        }
+    })
+    session.status = "concluded"
+    await session.save()
     res.status(200).json({ session })
 }

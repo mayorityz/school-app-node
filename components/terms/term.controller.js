@@ -16,10 +16,15 @@ export const createTerm = async (req, res) => {
 
 export const closeTerm = async (req, res) => {
     const { id } = req.params
-    const term = await Term.findByIdAndUpdate(id, { status: "concluded" })
+    const term = await Term.findById(id)
     if (!term) {
         throw new NotFoundError("Term does not exists")
     }
+    if (term.status === "concluded") {
+        throw new BadRequestError("Term has already been closed")
+    }
+    term.status = "concluded"
+    await term.save()
     res.status(200).json({ term })
 }
 
@@ -35,4 +40,5 @@ export const openTheDay = async (req, res) => {
     term.daysOpened = term.daysOpened + 1
     term.dateLastOpened = new Date()
     await term.save()
+    res.status(200).json({term})
 }

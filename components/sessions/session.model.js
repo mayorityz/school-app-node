@@ -8,10 +8,6 @@ const SessionSchema = new mongoose.Schema(
             trim: true,
             unique: true
         },
-        daysOpened: {
-            type: Number,
-            default: 0
-        },
         status: {
             type: String,
             default: "active",
@@ -21,7 +17,14 @@ const SessionSchema = new mongoose.Schema(
             }
         }
     },
-    { timestamps: true }
+    { timestamps: true, toJSON: {virtuals: true}, toObject: {virtuals: true} }
 )
+
+SessionSchema.virtual("terms", {
+    ref: "Term",
+    localField: "_id",
+    foreignField: "session",
+    justOne: false
+})
 
 export default mongoose.model("Session", SessionSchema)
