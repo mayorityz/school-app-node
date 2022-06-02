@@ -4,6 +4,7 @@ import { CustomHTTPError } from "../utils/errors.js";
 const { Error: MongooseError } = mongoose;
 
 export const errorHandlerMIddleware = (err, req, res, next) => {
+  console.log(err);
   if (err instanceof CustomHTTPError) {
     return res.status(err.statusCode).json({ message: err.message });
   }

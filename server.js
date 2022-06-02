@@ -1,6 +1,7 @@
 import "express-async-errors";
 import express from "express";
 import cors from "cors";
+import morgan from "morgan";
 import DB_CONNECTION from "./utils/db.js";
 import AttendanceRoute from "./components/attendance/attendance.route.js";
 import ClassroomRoute from "./components/classrooms/classroom.route.js";
@@ -16,6 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 8085;
 const ROUTE_PATH = "/api/v1";
 
+app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(
