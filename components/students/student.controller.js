@@ -79,10 +79,10 @@ export const login = async (req, res) => {
   if (!student.active) {
     throw new UnauthenticatedError("User has been deactivated");
   }
-  const passwordMatch = await student.confirmPassword(password);
+  const passwordMatch = await student.comparePassword(password);
   if (!passwordMatch) {
     throw new UnauthenticatedError("Invalid credentials");
   }
-  const token = student.generateToken();
+  const token = await student.generateToken();
   res.status(200).json({ token });
 };

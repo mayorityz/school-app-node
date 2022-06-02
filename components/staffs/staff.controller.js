@@ -66,10 +66,10 @@ export const login = async (req, res) => {
   if (!staff.active) {
     throw new UnauthenticatedError("User has been deactivated");
   }
-  const passwordMatch = await staff.confirmPassword(password);
+  const passwordMatch = await staff.comparePassword(password);
   if (!passwordMatch) {
     throw new UnauthenticatedError("Invalid credentials");
   }
-  const token = staff.generateToken();
+  const token = await staff.generateToken();
   res.status(200).json({ token });
 };

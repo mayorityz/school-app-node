@@ -83,9 +83,9 @@ StaffSchema.methods.generateToken = async function () {
     role: this.role,
     email: this.email,
     schoolInfo: {
-      term: term._id,
-      session: term.session,
-      dateLastOpened: term.dateLastOpened,
+      term: term?._id,
+      session: term?.session,
+      dateLastOpened: term?.dateLastOpened,
     },
   };
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });

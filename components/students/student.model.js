@@ -69,9 +69,9 @@ StudentSchema.methods.generateToken = async function () {
     active: this.active,
     admissionNumber: this.admissionNumber,
     schoolInfo: {
-      term: term._id,
-      session: term.session,
-      dateLastOpened: term.dateLastOpened,
+      term: term?._id,
+      session: term?.session,
+      dateLastOpened: term?.dateLastOpened,
     },
   };
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
