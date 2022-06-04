@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import Attendance from "../attendance/attendance.model.js";
 import Term from "../terms/term.model.js";
+import jwt from "jsonwebtoken";
 
 const StudentSchema = new mongoose.Schema(
   {
@@ -23,8 +25,9 @@ const StudentSchema = new mongoose.Schema(
       required: [true, "Please provide student's gender"],
     },
     classroom: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Classroom",
+      required: true,
     },
     dob: {
       type: Date,
@@ -54,6 +57,22 @@ StudentSchema.pre("save", async function (next) {
     this.password = hashedPassword;
   }
   next();
+});
+
+StudentSchema.post("save", async function () {
+  const term = await Term.findOne({ status: "active" });
+  const attendance = await Attendance.findOne({
+    student: this._id,
+    term: term._id,
+    classroom: this.classroom,
+  });
+  if (!attendance) {
+    await Attendance.create({
+      student: this._id,
+      term: term._id,
+      classroom: this.classroom,
+    });
+  }
 });
 
 StudentSchema.methods.comparePassword = async function (password) {

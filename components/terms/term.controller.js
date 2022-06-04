@@ -31,10 +31,9 @@ export const closeTerm = async (req, res) => {
 };
 
 export const openTheDay = async (req, res) => {
-  const { id } = req.params;
-  const term = await Term.findById(id);
+  const term = await Term.findOne({ status: "active" });
   if (!term) {
-    throw new NotFoundError("Term does not exists");
+    throw new NotFoundError("There is no active term.");
   }
   if (isToday(term.dateLastOpened)) {
     throw new BadRequestError("Day already opened");

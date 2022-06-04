@@ -6,21 +6,21 @@ dotenv.config();
 const GradeSchema = new mongoose.Schema(
   {
     student: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Student",
     },
     term: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Term",
     },
     classroom: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Classroom",
     },
     grades: [
       {
         subject: {
-          type: mongoose.Types.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: "Subject",
         },
         score: {

@@ -14,7 +14,7 @@ const TermSchema = new mongoose.Schema(
       },
     },
     session: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Session",
     },
     daysOpened: {

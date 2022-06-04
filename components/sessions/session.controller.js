@@ -5,7 +5,7 @@ import { removeKeysFromObj } from "../../utils/helper.js";
 export const createSession = async (req, res) => {
   const activeSession = await Session.findOne({ status: "active" });
   if (activeSession) {
-    throw BadRequestError(
+    throw new BadRequestError(
       "Cannot create new session if a session is still active"
     );
   }

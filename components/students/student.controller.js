@@ -5,12 +5,14 @@ import {
   NotFoundError,
   UnauthenticatedError,
 } from "../../utils/errors.js";
+import { removeKeysFromObj } from "../../utils/helper.js";
 
 export const createStudent = async (req, res) => {
   const body = req.body;
-  const student = await Student.create(body);
-  const token = await student.generateToken();
-  res.status(201).json({ token });
+  let student = await Student.create(body);
+  student = student.toObject();
+  removeKeysFromObj(student, "password");
+  res.status(201).json({ student });
 };
 
 export const getAllStudents = async (req, res) => {
@@ -61,7 +63,7 @@ export const changePassword = async (req, res) => {
   if (!student) {
     throw new NotFoundError("Student does not exists");
   }
-  const passwordMatch = await student.confirmPassword(oldPassword);
+  const passwordMatch = await student.comparePassword(oldPassword);
   if (!passwordMatch) {
     throw new BadRequestError("Invalid credentials");
   }

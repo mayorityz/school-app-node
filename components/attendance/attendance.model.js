@@ -3,16 +3,20 @@ import mongoose from "mongoose";
 const AttendanceSchema = new mongoose.Schema(
   {
     student: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Student",
     },
     term: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Term",
     },
     mark: {
       type: Number,
       default: 0,
+    },
+    classroom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Classroom",
     },
     dateLastMarked: {
       type: Date,

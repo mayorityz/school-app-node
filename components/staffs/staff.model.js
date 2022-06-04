@@ -33,7 +33,7 @@ const StaffSchema = new mongoose.Schema(
       required: [true, "Please provide student's gender"],
     },
     classroom: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Classroom",
     },
     dob: {

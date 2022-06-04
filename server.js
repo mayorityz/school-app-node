@@ -5,6 +5,7 @@ import morgan from "morgan";
 import DB_CONNECTION from "./utils/db.js";
 import AttendanceRoute from "./components/attendance/attendance.route.js";
 import ClassroomRoute from "./components/classrooms/classroom.route.js";
+import GradeRoute from "./components/grades/grade.router.js";
 import SectionRoute from "./components/sections/section.route.js";
 import SessionRoute from "./components/sessions/session.route.js";
 import StaffRoute from "./components/staffs/staff.route.js";
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 
 app.use(`${ROUTE_PATH}/attendance`, AttendanceRoute);
 app.use(`${ROUTE_PATH}/classroom`, ClassroomRoute);
+app.use(`${ROUTE_PATH}/grade`, GradeRoute);
 app.use(`${ROUTE_PATH}/section`, SectionRoute);
 app.use(`${ROUTE_PATH}/session`, SessionRoute);
 app.use(`${ROUTE_PATH}/staff`, StaffRoute);
@@ -48,10 +50,9 @@ app.use((req, res, next) => {
 app.use(errorHandlerMIddleware);
 
 try {
+  console.log("connecting DB ...");
   DB_CONNECTION.then(() => {
-    console.log("listening");
     app.listen(PORT, () => {
-      console.log("connecting DB ...");
       console.log(`running on port ${PORT}`);
     });
   });

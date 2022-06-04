@@ -10,7 +10,7 @@ const SubjectSchema = new mongoose.Schema(
       required: [true, "Please provide the subject title"],
     },
     section: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Section",
     },
   },

@@ -15,12 +15,14 @@ export const getAllStaffs = async (req, res) => {
 
 export const createStaff = async (req, res) => {
   const body = req.body;
-  const staff = await Staff.create(body);
-  const token = await staff.generateToken();
-  res.status(201).json({ token });
+  let staff = await Staff.create(body);
+  staff = staff.toObject();
+  removeKeysFromObj(staff, "password");
+  res.status(201).json({ staff });
 };
 
 export const updateStaff = async (req, res) => {
+  const { id } = req.params;
   const body = req.body;
   removeKeysFromObj(body, "password", "email");
   const staff = await Staff.findByIdAndUpdate(id, body, {
@@ -48,7 +50,7 @@ export const changePassword = async (req, res) => {
   if (!staff) {
     throw staffNotFoundError;
   }
-  const passwordMatch = await staff.confirmPassword(oldPassword);
+  const passwordMatch = await staff.comparePassword(oldPassword);
   if (!passwordMatch) {
     throw new BadRequestError("Invalid credentials");
   }

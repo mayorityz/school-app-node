@@ -11,7 +11,7 @@ const ClassroomSchema = new mongoose.Schema(
   },
   {
     section: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Section",
     },
   },
