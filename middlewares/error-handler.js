@@ -15,7 +15,8 @@ export const errorHandlerMIddleware = (err, req, res, next) => {
     return res.status(400).json({ message });
   }
   if (err instanceof MongooseError.CastError) {
-    return res.status(400).json({ message: `${err.path} expects ${err.kind}` });
+    const path = err.path === "_id" ? "id" : err.path
+    return res.status(400).json({ message: `${path} expects ${err.kind}` });
   }
   if (err.code && err.code === 11000) {
     return res
