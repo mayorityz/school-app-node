@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import validator from "validator";
-import Term from "../terms/term.model.js";
 
 const StaffSchema = new mongoose.Schema(
   {
@@ -75,18 +74,12 @@ StaffSchema.methods.comparePassword = async function (password) {
 };
 
 StaffSchema.methods.generateToken = async function () {
-  const term = await Term.findOne({ status: "active" });
   const payload = {
     id: this._id,
     classroom: this.classroom,
     active: this.active,
     role: this.role,
     email: this.email,
-    schoolInfo: {
-      term: term?._id,
-      session: term?.session,
-      dateLastOpened: term?.dateLastOpened,
-    },
   };
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
 };

@@ -1,7 +1,7 @@
 import Term from "./term.model.js";
-import { BadRequestError, NotFoundError } from "../../utils/errors.js";
-import { removeKeysFromObj } from "../../utils/helper.js";
+import { BadRequestError } from "../../utils/errors.js";
 import { isToday } from "../../utils/time.js";
+import { getActiveTerm } from "../../utils/active-term.js";
 
 export const createTerm = async (req, res) => {
   const activeTerm = await Term.findOne({ status: "active" });
@@ -10,31 +10,24 @@ export const createTerm = async (req, res) => {
       "Cannot create new term when there is still an active term"
     );
   }
-  const body = req.body;
-  removeKeysFromObj(body, "status", "dateLastOpened");
-  const term = await Term.create(body);
+  const { title, session, daysOpened } = req.body;
+  const term = await Term.create({
+    title,
+    session,
+    daysOpened: daysOpened || 0,
+  });
   res.status(201).json({ term });
 };
 
 export const closeTerm = async (req, res) => {
-  const { id } = req.params;
-  const term = await Term.findById(id);
-  if (!term) {
-    throw new NotFoundError("Term does not exists");
-  }
-  if (term.status === "concluded") {
-    throw new BadRequestError("Term has already been closed");
-  }
+  const term = await getActiveTerm();
   term.status = "concluded";
   await term.save();
   res.status(200).json({ term });
 };
 
 export const openTheDay = async (req, res) => {
-  const term = await Term.findOne({ status: "active" });
-  if (!term) {
-    throw new NotFoundError("There is no active term.");
-  }
+  const term = await getActiveTerm();
   if (isToday(term.dateLastOpened)) {
     throw new BadRequestError("Day already opened");
   }

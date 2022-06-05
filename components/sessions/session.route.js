@@ -13,6 +13,6 @@ router
   .route("/")
   .post(permit("admin"), createSession)
   .get(permit("admin"), getAllSessions);
-router.patch("/:id", permit("admin"), closeSession);
+router.patch("/close", permit("admin"), closeSession);
 
 export default router;
