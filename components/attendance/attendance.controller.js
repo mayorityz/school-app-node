@@ -1,25 +1,23 @@
 import Attendance from "./attendance.model.js";
-import Term from "../terms/term.model.js";
 import { isToday } from "../../utils/time.js";
 import { BadRequestError, NotFoundError } from "../../utils/errors.js";
+import { getActiveTerm } from "../../utils/active-term.js";
 
 export const markAttendance = async (req, res) => {
   const { student, isPresent } = req.body;
   const { classroom } = req.user;
-  const { dateLastOpened, _id: term } = await Term.findOne({
-    status: "active",
-  });
-  console.log(dateLastOpened);
-  console.log(term);
+  const { dateLastOpened, _id: term } = await getActiveTerm();
   if (!isToday(dateLastOpened)) {
     throw new BadRequestError("School has not been marked open today.");
   }
-  console.log(student, term, classroom);
-  const attendance = await Attendance.findOne({ student, term, classroom });
-  console.log(await Attendance.find());
-  if (!attendance) {
-    throw new NotFoundError("No student in this class for this term");
-  }
+  const existingAttendance = await Attendance.findOne({
+    student,
+    term,
+    classroom,
+  });
+  const attendance =
+    existingAttendance ||
+    (await Attendance.create({ student, term, classroom }));
   if (isToday(attendance.dateLastMarked)) {
     throw new BadRequestError(
       "Attendance already marked today for this student"

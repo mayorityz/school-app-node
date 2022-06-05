@@ -88,3 +88,14 @@ export const login = async (req, res) => {
   const token = await student.generateToken();
   res.status(200).json({ token });
 };
+
+export const updateStudent = async (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+  removeKeysFromObj(body, "admissionNumber", "password");
+  const student = await Student.findByIdAndUpdate(id, body, {
+    new: true,
+    runValidators: true,
+  });
+  res.status(200).json({ student });
+};

@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import Session from "../sessions/session.model.js";
+import { BadRequestError } from "../../utils/errors.js";
 
 dotenv.config();
 
@@ -40,5 +42,18 @@ const TermSchema = new mongoose.Schema(
 );
 
 TermSchema.index({ session: 1, title: -1 }, { unique: true });
+
+TermSchema.pre("save", async function (next) {
+  const session = await Session.findOne({
+    _id: this.session,
+    status: "active",
+  });
+  if (!session) {
+    throw new BadRequestError(
+      "The term is being created in a session that is not active"
+    );
+  }
+  next();
+});
 
 export default mongoose.model("Term", TermSchema);

@@ -1,11 +1,15 @@
 import Grade from "./grade.model.js";
 import { NotFoundError } from "../../utils/errors.js";
-import { removeKeysFromObj } from "../../utils/helper.js";
 
 export const createGradeRecord = async (req, res) => {
-  const body = req.body;
-  removeKeysFromObj(body, "classroom");
-  const grade = await Grade.create({ ...body, classroom: req.user.classroom });
+  const { student, grades } = req.body;
+  const { _id: term } = await getActiveTerm();
+  const grade = await Grade.create({
+    student,
+    term,
+    grades,
+    classroom: req.user.classroom,
+  });
   res.status(201).json({ grade });
 };
 

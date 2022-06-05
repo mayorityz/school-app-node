@@ -9,6 +9,6 @@ router
   .route("/")
   .post(permit("admin"), createTerm)
   .patch(permit("admin"), openTheDay);
-router.post("/:id", permit("admin"), closeTerm);
+router.post("/close", permit("admin"), closeTerm);
 
 export default router;

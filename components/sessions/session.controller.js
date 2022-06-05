@@ -21,10 +21,9 @@ export const getAllSessions = async (req, res) => {
 };
 
 export const closeSession = async (req, res) => {
-  const { id } = req.params;
-  const session = await Session.findById(id).populate("terms");
+  const session = await Session.findOne({ status: "active" }).populate("terms");
   if (!session) {
-    throw new NotFoundError("Session does not exists");
+    throw new NotFoundError("There is no active session");
   }
   if (session.status === "concluded") {
     throw new BadRequestError("Session has already been closed before");

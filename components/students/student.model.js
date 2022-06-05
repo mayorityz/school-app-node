@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import Attendance from "../attendance/attendance.model.js";
-import Term from "../terms/term.model.js";
 import jwt from "jsonwebtoken";
+import { getActiveTerm } from "../../utils/active-term.js";
 
 const StudentSchema = new mongoose.Schema(
   {
@@ -59,39 +59,17 @@ StudentSchema.pre("save", async function (next) {
   next();
 });
 
-StudentSchema.post("save", async function () {
-  const term = await Term.findOne({ status: "active" });
-  const attendance = await Attendance.findOne({
-    student: this._id,
-    term: term._id,
-    classroom: this.classroom,
-  });
-  if (!attendance) {
-    await Attendance.create({
-      student: this._id,
-      term: term._id,
-      classroom: this.classroom,
-    });
-  }
-});
-
 StudentSchema.methods.comparePassword = async function (password) {
   const isMatch = await bcrypt.compare(password, this.password);
   return isMatch;
 };
 
 StudentSchema.methods.generateToken = async function () {
-  const term = await Term.findOne({ status: "active" });
   const payload = {
     id: this._id,
     classroom: this.classroom,
     active: this.active,
     admissionNumber: this.admissionNumber,
-    schoolInfo: {
-      term: term?._id,
-      session: term?.session,
-      dateLastOpened: term?.dateLastOpened,
-    },
   };
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
 };
