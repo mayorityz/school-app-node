@@ -11,8 +11,8 @@
   },
   "type": "module",
   "engines": {
-    "yarn": "1.22.18",
-    "node": "16.14.2"
+    "yarn": "1.22.19",
+    "node": "16.13.2"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

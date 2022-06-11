@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import validator from "validator";
-import Term from "../terms/term.model.js";
+import mongoose from 'mongoose'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
+import validator from 'validator'
+import Term from '../terms/term.model.js'
 
 const StaffSchema = new mongoose.Schema(
   {
@@ -20,21 +20,21 @@ const StaffSchema = new mongoose.Schema(
       type: String,
       validate: {
         validator: validator.isEmail,
-        message: "Email is invalid",
+        message: 'Email is invalid',
       },
       unique: true,
     },
     gender: {
       type: String,
       enum: {
-        values: ["male", "female"],
-        message: "{VALUE} is not a valid gender",
+        values: ['male', 'female'],
+        message: '{VALUE} is not a valid gender',
       },
       required: [true, "Please provide student's gender"],
     },
     classroom: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Classroom",
+      ref: 'Classroom',
     },
     dob: {
       type: Date,
@@ -46,36 +46,36 @@ const StaffSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please provide password for the staff"],
+      required: [true, 'Please provide password for the staff'],
     },
     role: {
       type: String,
       required: [true, "Please provide staff's role"],
       enum: {
-        values: ["admin", "teacher"],
-        message: "{VALUE} is not an available role",
+        values: ['admin', 'teacher'],
+        message: '{VALUE} is not an available role',
       },
     },
   },
-  { timestamps: true }
-);
+  { timestamps: true },
+)
 
-StaffSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(this.password, salt);
-    this.password = hashedPassword;
+StaffSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    const salt = await bcrypt.genSalt()
+    const hashedPassword = await bcrypt.hash(this.password, salt)
+    this.password = hashedPassword
   }
-  next();
-});
+  next()
+})
 
 StaffSchema.methods.comparePassword = async function (password) {
-  const isMatch = await bcrypt.compare(password, this.password);
-  return isMatch;
-};
+  const isMatch = await bcrypt.compare(password, this.password)
+  return isMatch
+}
 
 StaffSchema.methods.generateToken = async function () {
-  const term = await Term.findOne({ status: "active" });
+  const term = await Term.findOne({ status: 'active' })
   const payload = {
     id: this._id,
     classroom: this.classroom,
@@ -87,8 +87,9 @@ StaffSchema.methods.generateToken = async function () {
       session: term?.session,
       dateLastOpened: term?.dateLastOpened,
     },
-  };
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
-};
+  }
+  console.log(process.env.JWT_SECRET) //bearer token doesn't seem to work
+  return jwt.sign(payload, 'app_secret_will_do_here', { expiresIn: '12h' })
+}
 
-export default mongoose.model("Staff", StaffSchema);
+export default mongoose.model('Staff', StaffSchema)

@@ -1,28 +1,30 @@
-import jwt from "jsonwebtoken";
-import { ForbiddenError, UnauthenticatedError } from "../utils/errors.js";
+import jwt from 'jsonwebtoken'
+import { ForbiddenError, UnauthenticatedError } from '../utils/errors.js'
 
 export const authMiddleware = (req, res, next) => {
   try {
-    const { authorization } = req.headers;
-    const token = authorization.split(" ")[1];
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = payload;
-    next();
+    const { authorization } = req.headers
+    console.log(authorization)
+    const token = authorization.split(' ')[1]
+    const payload = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = payload
+    next()
   } catch (error) {
-    let message = "User not authenticated";
+    let message = 'User not authenticated'
     if (error instanceof UnauthenticatedError) {
-      message = error.message;
+      message = error.message
     }
-    throw new UnauthenticatedError(message);
+    throw new UnauthenticatedError(message)
   }
-};
+}
 
 export const permit = (...roles) => {
   return (req, res, next) => {
-    const { role } = req.user;
+    const { role } = req.user
+    console.log(role)
     if (!roles.includes(role)) {
-      throw new ForbiddenError("Not allowed to perform this action");
+      throw new ForbiddenError('Not allowed to perform this action')
     }
-    next();
-  };
-};
+    next()
+  }
+}

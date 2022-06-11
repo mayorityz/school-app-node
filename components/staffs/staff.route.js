@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express'
 import {
   changePassword,
   createStaff,
@@ -6,23 +6,23 @@ import {
   getSingleStaff,
   login,
   updateStaff,
-} from "./staff.controller.js";
-import { authMiddleware, permit } from "../../middlewares/auth.js";
+} from './staff.controller.js'
+import { authMiddleware, permit } from '../../middlewares/auth.js'
 
-const router = Router();
+const router = Router()
 
 // public route
-router.post("/login", login);
+router.post('/login', login)
 
-router.use(authMiddleware);
+router.use(authMiddleware)
 router
-  .route("/")
-  .get(permit("admin"), getAllStaffs)
-  .post(permit("admin"), createStaff)
-  .patch(permit("admin", "teacher"), changePassword);
+  .route('/')
+  .get(permit('admin'), getAllStaffs)
+  .post(permit('admin'), createStaff)
+  .patch(permit('admin', 'teacher'), changePassword)
 router
-  .route("/:id")
-  .get(permit("admin"), getSingleStaff)
-  .patch(permit("admin"), updateStaff);
+  .route('/:id')
+  .get(permit('admin'), getSingleStaff)
+  .patch(permit('admin'), updateStaff)
 
-export default router;
+export default router

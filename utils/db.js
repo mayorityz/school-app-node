@@ -1,21 +1,23 @@
-import dotenv from "dotenv";
-dotenv.config();
+import dotenv from 'dotenv'
+dotenv.config()
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 var DB_POOL =
-  process.env.NODE_ENV !== "dev" ? process.env.REMOTE_DB : process.env.LOCAL_DB;
+  process.env.NODE_ENV === 'production'
+    ? process.env.REMOTE_DB
+    : process.env.LOCAL_DB
 
-let connection;
+let connection
 
 try {
   connection = mongoose.connect(DB_POOL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    // useFindAndModify: false,
-  });
+  })
 } catch (error) {
-  console.log(error);
+  console.log('error here!')
+  console.log(error)
 }
 
-export default connection;
+export default connection
