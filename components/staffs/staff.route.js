@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   changePassword,
   createStaff,
+  createStaffAuth,
   getAllStaffs,
   getSingleStaff,
   login,
@@ -13,13 +14,15 @@ const router = Router()
 
 // public route
 router.post('/login', login)
+router.route('/create-admin').post(createStaffAuth)
 
 router.use(authMiddleware)
 router
   .route('/')
-  .get(permit('admin'), getAllStaffs)
+  .get(permit('admin', 'teacher'), getAllStaffs)
   .post(permit('admin'), createStaff)
   .patch(permit('admin', 'teacher'), changePassword)
+
 router
   .route('/:id')
   .get(permit('admin'), getSingleStaff)

@@ -1,21 +1,26 @@
-import { Router } from "express";
+import { Router } from 'express'
 import {
   createGradeRecord,
+  createNewGrade,
   getAllGradeRecord,
   getSingleGradeRecord,
+  getStudentGradeByTermSession,
   updateSingleGradeRecord,
-} from "./grade.controller.js";
-import { authMiddleware, permit } from "../../middlewares/auth.js";
+} from './grade.controller.js'
+import { authMiddleware, permit } from '../../middlewares/auth.js'
 
-const router = Router();
+const router = Router()
 
 router
-  .route("/")
+  .route('/')
   .get(authMiddleware, getAllGradeRecord)
-  .post(authMiddleware, permit("teacher"), createGradeRecord);
-router
-  .route("/:id")
-  .get(authMiddleware, getSingleGradeRecord)
-  .patch(authMiddleware, permit("teacher"), updateSingleGradeRecord);
+  .post(authMiddleware, permit('teacher', 'admin'), createNewGrade)
 
-export default router;
+router
+  .route('/:id')
+  .get(authMiddleware, getSingleGradeRecord)
+  .patch(authMiddleware, permit('teacher'), updateSingleGradeRecord)
+
+router.route('/term-grades').post(authMiddleware, getStudentGradeByTermSession)
+
+export default router

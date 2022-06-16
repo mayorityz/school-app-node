@@ -12,6 +12,7 @@ import StaffRoute from './components/staffs/staff.route.js'
 import StudentRoute from './components/students/student.route.js'
 import SubjectRoute from './components/subjects/subject.route.js'
 import TermRoute from './components/terms/term.route.js'
+import CommentRoute from './components/comment/comment.route.js'
 import { errorHandlerMIddleware } from './middlewares/error-handler.js'
 
 const app = express()
@@ -41,6 +42,7 @@ app.use(`${ROUTE_PATH}/staff`, StaffRoute)
 app.use(`${ROUTE_PATH}/subject`, SubjectRoute)
 app.use(`${ROUTE_PATH}/term`, TermRoute)
 app.use(`${ROUTE_PATH}/student`, StudentRoute)
+app.use(`${ROUTE_PATH}/comment`, CommentRoute)
 
 app.use((req, res, next) => {
   res.status(404).send("Sorry can't find that!")
